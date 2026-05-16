@@ -1,4 +1,4 @@
-package electronicsProject.Sim;
+package electronicsProject.sim;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -20,14 +20,20 @@ public class ChartSim {
         mainFrame.setLayout(new BorderLayout());
 
         int maxSamples = 5000;
+        double hrcOffsetThreshold = 0.1;
+        double hrcAlpha = 0.1;
+        double bpLowCutoff = 0.05;
+        double bpHighCutoff = 400.0;
+        double bpSamplingRate = 1000;
+        double bpGain = 1.0;
 
-        SweepChart chart_SPO2 = new SweepChart("SPO2", maxSamples, true, false, 0.2, 0.1, 0.05, 400.0, 1000.0, 1.5);
-        SweepChart chart_IBP = new SweepChart("Invasive BP", maxSamples, true, false, 0.2, 0.1, 0.05, 400.0, 1000.0, 1.0);
-        SweepChart chart_ECG = new SweepChart("ECG", maxSamples, true, false, 0.2, 0.1, 0.05, 400.0, 1000.0, 1.0);
+        SweepChart chart_SPO2 = new SweepChart("SPO2", maxSamples, true, true, hrcOffsetThreshold, hrcAlpha, bpLowCutoff, bpHighCutoff/2, bpSamplingRate, bpGain);
+        SweepChart chart_IBP = new SweepChart("Invasive BP", maxSamples, true, true, hrcOffsetThreshold, hrcAlpha, bpLowCutoff, bpHighCutoff, bpSamplingRate, bpGain);
+        SweepChart chart_ECG = new SweepChart("ECG", maxSamples, true, true, hrcOffsetThreshold, hrcAlpha, bpLowCutoff, bpHighCutoff, bpSamplingRate, bpGain);
 
-        JPanel chartContainer = new JPanel(new GridLayout(3, 1)); 
+        JPanel chartContainer = new JPanel(new GridLayout(2, 1)); 
         chartContainer.add(chart_SPO2.getContainer());
-        chartContainer.add(chart_IBP.getContainer());
+        // chartContainer.add(chart_IBP.getContainer());
         chartContainer.add(chart_ECG.getContainer());
 
         mainFrame.add(chartContainer, BorderLayout.CENTER);
@@ -59,7 +65,7 @@ public class ChartSim {
                     double IBP = Double.parseDouble(parts[3].trim());
                     double ECG = Double.parseDouble(parts[1].trim());
 
-                    long timestamp = System.currentTimeMillis();
+                    long timestamp = Long.parseLong(parts[0].trim());
 
                     chart_SPO2.addData(timestamp, SPO2, cursor);
                     chart_IBP.addData(timestamp, IBP, cursor);

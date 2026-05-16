@@ -3,13 +3,13 @@ package electronicsProject.classes;
 public class BandpassFilter {
     private double[] x1, x2, y1, y2;
     private double b0, b1, b2, a1, a2;
-    private double gain;
+    private double low, high, fs, gain;
 
     /**
      * Initializes a new BandpassFilter with the specified low and high cutoff frequencies and sampling rate.
      * @param lowCutoff Lower bound in Hz
      * @param highCutoff Upper bound in Hz
-     * @param samplingRate How many samples per second your sensor provides
+     * @param samplingRate Sampling rate in Hz
      * @param gain The gain of the filter
      */
     public BandpassFilter(double lowCutoff, double highCutoff, double samplingRate, double gain) {
@@ -37,6 +37,9 @@ public class BandpassFilter {
         this.a1 = -2 * Math.cos(wo) / a0;
         this.a2 = (1 - alpha) / a0;
 
+        this.low = low;
+        this.high = high;
+        this.fs = fs;
         this.gain = g;
     }
 
@@ -62,7 +65,7 @@ public class BandpassFilter {
         return outputs;
     }
 
-        /**
+    /**
      * Applies the bandpass filter to a new input sample and returns the filtered output.
      * @param input The new input sample.
      * @return The filtered output.
@@ -86,5 +89,37 @@ public class BandpassFilter {
         x2 = new double[10];
         y1 = new double[10];
         y2 = new double[10];
+    }
+
+    /**
+     * Resets the filter and updates it for the new sampling rate
+     * @param samplingRate Sampling rate in Hz
+     */
+    public void updateSamplingRate(double samplingRate) {
+        updateFilter(low, high, samplingRate, gain);
+    }
+
+    /**
+     * Resets the filter and updates it for the new lower bound
+     * @param lowCutoff Lower bound in Hz
+     */
+    public void updateLowCutoff(double lowCutoff) {
+        updateFilter(lowCutoff, high, fs, gain);
+    }
+
+    /**
+     * Resets the filter and updates it for the new higher bound
+     * @param highCutoff Higher bound in Hz
+     */
+    public void updateHighCutoff(double highCutoff) {
+        updateFilter(low, highCutoff, fs, gain);
+    }
+
+    /**
+     * Resets the filter and updates it for the new gain
+     * @param gain The gain of the filter
+     */
+    public void updateGain(double gain) {
+        updateFilter(low, high, fs, gain);
     }
 }

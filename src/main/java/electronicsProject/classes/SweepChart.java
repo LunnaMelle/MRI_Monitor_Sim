@@ -207,36 +207,8 @@ public class SweepChart {
      * @param newCursor The index of the new cursor position (if -1, it will auto-increment)
      */
     public synchronized void addData(long x, int v, int newCursor) {
-        List<Number> d = new ArrayList<>();
-        d.add(x);
-        d.add(v);
-        data.add(d);
-
-        if (recording && recordWriter != null) {
-            recordWriter.printf("%d,%d,%d%n",
-                    data.size(),
-                    x, v);
-        }
-
-        if (!paused) {
-            double f_i = convertToVoltage(v);
-            double f = bp.filter(f_i);
-
-
-            if (newCursor == -1) {
-                cursor = (cursor + 1) % maxSamples;
-            } else {
-                cursor = newCursor;
-            }
-            int nullpoint = (cursor + 200) % maxSamples;
-
-            hrc.processPoint(x, f);
-            String status = hrc.getStatus();
-
-            series.updateByIndex(cursor, f);
-            series.updateByIndex(nullpoint, null);
-            statusLabel.setText(status);
-        }
+        double double_v = convertToVoltage(v);
+        addData(x, double_v, newCursor);
     }
 
     /**
@@ -267,7 +239,7 @@ public class SweepChart {
             } else {
                 cursor = newCursor;
             }
-            int nullpoint = (cursor + 200) % maxSamples;
+            int nullpoint = (cursor + maxSamples/20) % maxSamples;
 
             hrc.processPoint(x, f);
             String status = hrc.getStatus();

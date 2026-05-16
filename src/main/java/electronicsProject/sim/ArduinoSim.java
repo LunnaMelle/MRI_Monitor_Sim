@@ -1,4 +1,4 @@
-package electronicsProject.Sim;
+package electronicsProject.sim;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ArduinoSim {
     public static void main(String[] args) {
         int port = 12345;
-        String csvFilePath = "src/main/java/electronicsProject/data/mr_bla.csv";
+        String csvFilePath = "src/main/java/electronicsProject/data/mr_bla&gra.csv";
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Simulator started. Waiting for connection on port " + port + "...");
@@ -36,7 +36,7 @@ public class ArduinoSim {
 
                             if (line != null) {
                                 String[] values = line.split(",");
-                                String dataLine = values[6] + "," + values[3] + "," + values[4] + "," + values[5];
+                                String dataLine = values[0] + "," + values[3] + "," + values[4] + "," + values[3];
                                 System.out.println("[ArduinoSim] Sending: " + dataLine);
                                 out.println(dataLine);
                             } else {
@@ -50,7 +50,7 @@ public class ArduinoSim {
                     }, 0, 1, TimeUnit.MILLISECONDS);
 
                     while (isRunning.get() && !clientSocket.isClosed()) {
-                        Thread.sleep(100); 
+                        Thread.sleep(10); 
                     }
                     
                     scheduler.shutdownNow();
